@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/fetch_app/constants"
 	"github.com/fetch_app/entities/models"
 	"github.com/fetch_app/helper"
 	"github.com/fetch_app/pkg/logger"
@@ -48,13 +49,18 @@ func (c *resourceCaller) CallFetchResource(ctx context.Context) ([]models.Fetch,
 	return result, err
 }
 
-func (c *resourceCaller) CallCurrencyConverter(ctx context.Context) (string, error) {
+func (c *resourceCaller) CallCurrencyConverter(ctx context.Context) (interface{}, error) {
 	var err error
-	var result string
+	var result interface{}
 
 	helper.Block{
 		Try: func() {
+			apiURL := fmt.Sprintf("https://free.currconv.com/api/v7/convert?q=IDR_USD&compact=ultra&apiKey=%s", constants.ConverterAPIKey)
 
+			response, errRes := c.get(ctx, apiURL, c.httpClient)
+
+			helper.Throw(errRes)
+			helper.Throw(json.Unmarshal([]byte(response), &result))
 		},
 		Catch: func(e helper.Exception) {
 			logger.Error(fmt.Sprintf("%v > CallCurrencyConverter: %v", c.defaultErrMsg, e))
