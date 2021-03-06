@@ -9,5 +9,5 @@ import (
 // ResourceCaller :nodoc:
 type ResourceCaller interface {
 	CallFetchResource(ctx context.Context) ([]models.Fetch, error)
-	CallCurrencyConverter(ctx context.Context) (interface{}, error)
+	CallCurrencyConverter(ctx context.Context) (map[string]interface{}, error)
 }

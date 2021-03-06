@@ -1,3 +1,4 @@
 package constants
 
-const chaceConvUSDKey = "IDR_USD"
+// ChaceConvUSDKey :nodoc:
+const ChaceConvUSDKey = "IDR_USD"

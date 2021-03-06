@@ -49,9 +49,9 @@ func (c *resourceCaller) CallFetchResource(ctx context.Context) ([]models.Fetch,
 	return result, err
 }
 
-func (c *resourceCaller) CallCurrencyConverter(ctx context.Context) (interface{}, error) {
+func (c *resourceCaller) CallCurrencyConverter(ctx context.Context) (map[string]interface{}, error) {
 	var err error
-	var result interface{}
+	var result map[string]interface{}
 
 	helper.Block{
 		Try: func() {
