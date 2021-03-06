@@ -32,7 +32,7 @@ func NewService() Service {
 
 func (s *service) Fetch(ctx context.Context) (interface{}, error) {
 	var err error
-	result := make([]models.Fetch, 0)
+	result := make([]models.Resource, 0)
 
 	helper.Block{
 		Try: func() {

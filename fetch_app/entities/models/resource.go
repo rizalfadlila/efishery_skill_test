@@ -1,7 +1,7 @@
 package models
 
-// Fetch :nodoc:
-type Fetch struct {
+// Resource :nodoc:
+type Resource struct {
 	UUID      string `json:"uuid"`
 	Comodity  string `json:"komoditas"`
 	Province  string `json:"area_provinsi"`

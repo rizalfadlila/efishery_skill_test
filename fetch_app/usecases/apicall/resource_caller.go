@@ -27,9 +27,9 @@ func NewResourceCaller() ResourceCaller {
 	}
 }
 
-func (c *resourceCaller) CallFetchResource(ctx context.Context) ([]models.Fetch, error) {
+func (c *resourceCaller) CallFetchResource(ctx context.Context) ([]models.Resource, error) {
 	var err error
-	result := make([]models.Fetch, 0)
+	result := make([]models.Resource, 0)
 
 	helper.Block{
 		Try: func() {
