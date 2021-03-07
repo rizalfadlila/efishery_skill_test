@@ -1,4 +1,0 @@
-rizal,123456789,admin,a7f7
-rizalq,123456789,admin,efa1
-rizalqa,123456789,admin,77c5
-rizalqsa,123456789,admin,1cfe
