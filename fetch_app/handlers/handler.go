@@ -24,11 +24,31 @@ func NewHandler(service service.Service) *Handler {
 // @Accept  json
 // @Produce  json
 // @Param Authorization header string true "Authentication header"
-// @Success 200 {object} []models.Fetch "Ok"
+// @Success 200 {object} []models.Resource "Ok"
 // @Failure 500 {object} responses.Response
 // @Router /fetch [get]
 func (h *Handler) Fetch(ginCtx *gin.Context) {
 	result, err := h.service.Fetch(ginCtx.Request.Context())
+
+	if err != nil {
+		h.errorResponse(ginCtx)
+		return
+	}
+
+	h.successResponse(ginCtx, result)
+}
+
+// Aggregate godoc
+// @Summary Aggregate area_province and date
+// @Tags Fetch App
+// @Accept  json
+// @Produce  json
+// @Param Authorization header string true "Authentication header"
+// @Success 200 {object} []models.Resource "Ok"
+// @Failure 500 {object} responses.Response
+// @Router /aggregate [get]
+func (h *Handler) Aggregate(ginCtx *gin.Context) {
+	result, err := h.service.Aggregate(ginCtx.Request.Context())
 
 	if err != nil {
 		h.errorResponse(ginCtx)

@@ -30,6 +30,7 @@ func initREST() *gin.Engine {
 	handler := rest.NewHandler(svc)
 
 	router.GET("/fetch", handler.Fetch)
+	router.GET("/aggregate", handler.Aggregate)
 
 	return router
 }

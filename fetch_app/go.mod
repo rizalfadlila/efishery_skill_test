@@ -3,6 +3,7 @@ module github.com/fetch_app
 go 1.14
 
 require (
+	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/appleboy/gin-jwt/v2 v2.6.4
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

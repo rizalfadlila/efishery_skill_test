@@ -4,15 +4,18 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fetch_app/constants"
 	"github.com/fetch_app/entities/models"
 	"github.com/fetch_app/helper"
 	"github.com/fetch_app/pkg/logger"
+	"github.com/fetch_app/pkg/util"
 	"github.com/fetch_app/usecases/apicall"
-
 	"github.com/patrickmn/go-cache"
+
+	linq "github.com/ahmetb/go-linq/v3"
 )
 
 type service struct {
@@ -68,4 +71,91 @@ func (s *service) Fetch(ctx context.Context) (interface{}, error) {
 	}.Do()
 
 	return result, err
+}
+
+func (s *service) Aggregate(ctx context.Context) (interface{}, error) {
+	var err error = nil
+	result := make([]interface{}, 0)
+
+	helper.Block{
+		Try: func() {
+			resources, err := s.groupingByWeekly(ctx)
+
+			helper.Throw(err)
+
+			result = resources
+		},
+		Catch: func(e helper.Exception) {
+			logger.Error(fmt.Sprintf("%v > Aggregate: %v", s.defaultErrMsg, e))
+			err = e
+		},
+	}.Do()
+
+	return result, err
+}
+
+func (s *service) groupingByWeekly(ctx context.Context) ([]interface{}, error) {
+	var err error = nil
+	result := make([]interface{}, 0)
+
+	helper.Block{
+		Try: func() {
+			resources, err := s.caller.CallFetchResource(ctx)
+
+			helper.Throw(err)
+
+			linq.From(resources).
+				WhereT(func(r models.Resource) bool {
+					return r.Province != "" && r.Date != ""
+				}).
+				GroupByT(
+					func(r models.Resource) string {
+						return util.GetWeekByDateString(r.Date)
+					},
+					func(r models.Resource) string {
+						return fmt.Sprintf("%v_%v", r.Province, r.Date)
+					}).
+				SelectIndexedT(func(index int, resourceGroup linq.Group) map[string]interface{} {
+					var result map[string]interface{}
+					if resourceGroup.Key.(string) != "" {
+
+						max := linq.From(resourceGroup.Group).Max()
+						min := linq.From(resourceGroup.Group).Min()
+
+						aggregate := map[string]interface{}{
+							"min": setAggregateResult(min),
+							"max": setAggregateResult(max),
+						}
+
+						keys := strings.Split(resourceGroup.Key.(string), "_")
+
+						result = map[string]interface{}{
+							"week":      keys[0],
+							"year":      keys[1],
+							"aggregate": aggregate,
+						}
+					}
+					return result
+				}).
+				ToSlice(&result)
+		},
+		Catch: func(e helper.Exception) {
+			logger.Error(fmt.Sprintf("%v > groupByWeekly: %v", s.defaultErrMsg, e))
+			err = e
+		},
+	}.Do()
+
+	return result, err
+}
+
+func extractValue(value interface{}) []string {
+	values := strings.Split(value.(string), "_")
+	return values
+}
+
+func setAggregateResult(values interface{}) map[string]interface{} {
+	return map[string]interface{}{
+		"province": extractValue(values)[0],
+		"date":     extractValue(values)[1],
+	}
 }
