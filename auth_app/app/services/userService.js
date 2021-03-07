@@ -1,7 +1,10 @@
 module.exports = {
   claimsJwt(req, res) {
     return res.status(200).send({
-      status: "claimsJwt",
+      name: req.name,
+      phone: req.phone,
+      role: req.role,
+      timestamp: req.timestamp,
     });
   },
 };
