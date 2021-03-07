@@ -31,6 +31,7 @@ func initREST() *gin.Engine {
 
 	router.GET("/fetch", handler.Fetch)
 	router.GET("/aggregate", handler.Aggregate)
+	router.GET("/clamis-jwt", handler.ClaimsJWT)
 
 	return router
 }
