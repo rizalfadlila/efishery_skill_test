@@ -10,7 +10,6 @@ import (
 // UserContext contains user data parsed from context
 type UserContext struct {
 	Name      string `json:"name"`
-	Email     string `json:"email"`
 	Phone     string `json:"phone"`
 	Role      string `json:"role"`
 	Timestamp string `json:"timestamp"`
@@ -23,11 +22,6 @@ func ParseUserContext(ctx context.Context) (userContext UserContext, err error) 
 	userContext.Name, exist = ctx.Value(constants.KeyName).(string)
 	if !exist {
 		return UserContext{}, exceptions.ErrMissingName
-	}
-
-	userContext.Email, exist = ctx.Value(constants.KeyEmail).(string)
-	if !exist {
-		return UserContext{}, exceptions.ErrMissingEmail
 	}
 
 	userContext.Phone, exist = ctx.Value(constants.KeyPhone).(string)

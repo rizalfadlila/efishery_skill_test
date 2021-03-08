@@ -12,6 +12,7 @@ require (
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/gojektech/heimdall v5.0.2+incompatible
 	github.com/gojektech/valkyrie v0.0.0-20190210220504-8f62c1e7ba45 // indirect
+	github.com/joho/godotenv v1.3.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.8.0
 	github.com/swaggo/gin-swagger v1.3.0

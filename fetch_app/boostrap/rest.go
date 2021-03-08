@@ -1,8 +1,6 @@
 package boostrap
 
 import (
-	"os"
-
 	"github.com/fetch_app/constants"
 	"github.com/fetch_app/docs"
 	rest "github.com/fetch_app/handlers"
@@ -21,17 +19,19 @@ func initREST() *gin.Engine {
 	// Swagger
 	docs.SwaggerInfo.Title = constants.ServiceName
 	docs.SwaggerInfo.Version = constants.ServiceVersion
-	if os.Getenv("ENV") != "production" {
-		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Use(middlewares.CORSMiddleware())
 
 	handler := rest.NewHandler(svc)
 
-	router.GET("/fetch", handler.Fetch)
-	router.GET("/aggregate", handler.Aggregate)
-	router.GET("/clamis-jwt", handler.ClaimsJWT)
+	authRouter := router.Use(middlewares.AuthMiddleware(), middlewares.UserContextMiddleware())
+	authRouter.GET("/fetch", handler.Fetch)
+	authRouter.GET("/clamis-jwt", handler.ClaimsJWT)
+
+	adminRouter := router.Use(middlewares.AuthMiddleware(), middlewares.UserContextMiddleware(), middlewares.AdminMiddleware())
+	adminRouter.GET("/aggregate", handler.Aggregate)
 
 	return router
 }

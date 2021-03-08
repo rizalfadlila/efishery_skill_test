@@ -11,7 +11,7 @@ func RunApp() {
 	initService()
 
 	router := initREST()
-	if err := router.Run(":3030"); err != nil {
+	if err := router.Run(); err != nil {
 		logger.Panic(
 			fmt.Sprintf("Receiving error: %v", err),
 		)
