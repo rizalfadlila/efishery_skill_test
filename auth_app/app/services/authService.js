@@ -19,12 +19,12 @@ var self = (module.exports = {
           message: "Invalid username or password",
         });
       }
-      var found =
-        data.indexOf(`${req.body.username},${req.body.password}`) >= 0;
-
+      let index = data.indexOf(`${req.body.username},${req.body.password}`);
+      var found = index >= 0;
+      let record = data.substring(index, data.length);
       if (found) {
         return res.status(200).send({
-          accessToken: self.generateToken(data),
+          accessToken: self.generateToken(record),
         });
       } else {
         return res.status(401).send({
@@ -42,6 +42,7 @@ var self = (module.exports = {
       role: records[3],
       timestamp: records[4],
     };
+
     var token = jwt.sign(payload, process.env.APP_KEY, {
       expiresIn: 86400,
       algorithm: "HS256",
@@ -56,7 +57,7 @@ var self = (module.exports = {
         self.appendRecord(content, res);
       } else {
         if (data.indexOf(query) >= 0) {
-          return res.status(409).send({
+          return res.status(401).send({
             message: "Username already exists",
           });
         } else {
@@ -73,7 +74,7 @@ var self = (module.exports = {
         });
       }
       return res.status(200).send({
-        message: "Registered successfully",
+        message: "User registered successfully",
       });
     });
   },
